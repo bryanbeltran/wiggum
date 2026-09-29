@@ -214,7 +214,9 @@ class WiggumRunner:
                     active_mode = request["mode"]
                     if request.get("objective"):
                         active_objective = request["objective"]
-                    if active_mode in {"bugfix", "directed"} and not active_objective:
+                    if active_mode in {"bugfix", "directed"} and not (
+                        active_objective and active_objective.strip()
+                    ):
                         state.clear_control()
                         stop_reason = f"pivot to {active_mode} requires an objective"
                         break

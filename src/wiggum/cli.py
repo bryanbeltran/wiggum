@@ -137,7 +137,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             return 0
 
         if args.command == "pivot":
-            if args.mode in {"bugfix", "directed"} and not args.objective:
+            if args.mode in {"bugfix", "directed"} and not (
+                args.objective and args.objective.strip()
+            ):
                 raise CycleError(f"pivoting to {args.mode} requires --objective")
             state.request_control("pivot", args.mode, args.objective)
             print(f"Pivot to {args.mode} requested for {project.alias}; it takes effect at a cycle boundary.")
