@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "summary": { "type": "string" },
+    "patterns": { "type": "array", "items": { "type": "string" } },
+    "proposals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": { "type": "string" },
+          "change": { "type": "string" },
+          "supporting_cycle_ids": { "type": "array", "items": { "type": "string" } },
+          "decision": { "type": "string", "enum": ["implement", "defer"] },
+          "tradeoffs": { "type": "string" },
+          "replay_plan": { "type": "array", "items": { "type": "string" } },
+          "critical_single_incident": { "type": "boolean" }
+        },
+        "required": ["title", "change", "supporting_cycle_ids", "decision", "tradeoffs", "replay_plan", "critical_single_incident"]
+      }
+    }
+  },
+  "required": ["summary", "patterns", "proposals"]
+}

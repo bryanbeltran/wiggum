@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "result": { "type": "string", "enum": ["implemented", "no_change", "blocked", "escalate"] },
+    "summary": { "type": "string" },
+    "commit_subject": { "type": "string" },
+    "files_changed": { "type": "array", "items": { "type": "string" } },
+    "tests_added": { "type": "array", "items": { "type": "string" } },
+    "tests_run": { "type": "array", "items": { "type": "string" } },
+    "limitations": { "type": "array", "items": { "type": "string" } },
+    "risk": { "type": "string", "enum": ["green", "yellow", "red"] }
+  },
+  "required": ["result", "summary", "commit_subject", "files_changed", "tests_added", "tests_run", "limitations", "risk"]
+}

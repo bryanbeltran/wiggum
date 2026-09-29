@@ -1,0 +1,17 @@
+# Copy this file to projects.toml and replace the example values.
+
+[projects.garden]
+path = "/absolute/path/to/your/repository"
+integration_branch = "feature/wiggum"
+base_branch = "main"
+constitution = "PRODUCT.md"
+# Optional; by default Wiggum uses $XDG_STATE_HOME/wiggum/projects/garden
+# or ~/.local/state/wiggum/projects/garden.
+# state_dir = "~/.local/state/wiggum/projects/garden"
+
+# Commands are argv arrays, not shell strings. They run in the target worktree.
+# Empty means the project has no configured validation command.
+check_commands = [["pytest", "-q"]]
+
+# Optional command that writes a screenshot to WIGGUM_SCREENSHOT_PATH.
+# browser_capture_command = ["node", "scripts/capture-wiggum.mjs"]

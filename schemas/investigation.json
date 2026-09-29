@@ -1,0 +1,56 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "outcome": { "type": "string", "enum": ["implement", "no_work", "defer", "escalate", "council"] },
+    "summary": { "type": "string" },
+    "reason": { "type": "string" },
+    "risk": { "type": "string", "enum": ["green", "yellow", "red"] },
+    "candidate": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "problem": { "type": "string" },
+        "evidence": { "type": "array", "items": { "type": "string" } },
+        "acceptance_criteria": { "type": "array", "items": { "type": "string" } },
+        "value_score": { "type": "number", "minimum": 0, "maximum": 100 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "required": ["title", "problem", "evidence", "acceptance_criteria", "value_score", "confidence"]
+    },
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": { "type": "string" },
+          "value": { "type": "string" },
+          "evidence": { "type": "string" },
+          "tradeoffs": { "type": "string" },
+          "risk": { "type": "string", "enum": ["green", "yellow", "red"] },
+          "scores": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "user_value": { "type": "number", "minimum": 0, "maximum": 100 },
+              "workflow_breadth": { "type": "number", "minimum": 0, "maximum": 100 },
+              "constitution_fit": { "type": "number", "minimum": 0, "maximum": 100 },
+              "confidence": { "type": "number", "minimum": 0, "maximum": 100 },
+              "existing_capability_leverage": { "type": "number", "minimum": 0, "maximum": 100 },
+              "low_maintenance_cost": { "type": "number", "minimum": 0, "maximum": 100 },
+              "low_regression_risk": { "type": "number", "minimum": 0, "maximum": 100 },
+              "time_to_value": { "type": "number", "minimum": 0, "maximum": 100 }
+            },
+            "required": ["user_value", "workflow_breadth", "constitution_fit", "confidence", "existing_capability_leverage", "low_maintenance_cost", "low_regression_risk", "time_to_value"]
+          },
+          "preferred": { "type": "boolean" }
+        },
+        "required": ["title", "value", "evidence", "tradeoffs", "risk", "scores", "preferred"]
+      }
+    },
+    "blockers": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": ["outcome", "summary", "reason", "risk", "candidate", "candidates", "blockers"]
+}

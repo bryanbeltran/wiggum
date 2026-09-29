@@ -1,0 +1,31 @@
+[runtime]
+default_cycles = 1
+low_value_stop_after = 5
+batch_review_after_commits = 15
+review_fix_rounds = 1
+agent_timeout_seconds = 3600
+check_timeout_seconds = 1800
+max_cycle_seconds = 14400
+baseline_checks = true
+max_agent_output_bytes = 20000000
+max_evidence_bytes = 104857600
+
+[model]
+id = "gpt-6-luna"
+reasoning_effort = "max"
+
+[feature]
+default_adventurousness = "product_minded"
+default_selection = "auto"
+candidate_count = 5
+weights = { user_value = 0.20, workflow_breadth = 0.15, constitution_fit = 0.15, confidence = 0.15, existing_capability_leverage = 0.15, low_maintenance_cost = 0.08, low_regression_risk = 0.07, time_to_value = 0.05 }
+
+[self_improvement]
+enabled = true
+minimum_cycles_before_analysis = 30
+periodic_every_new_cycles = 50
+minimum_supporting_examples = 3
+auto_implement_experiments = true
+branch_isolated = true
+auto_promote_to_trusted_runtime = false
+early_analysis_signals = ["serious_regression", "repeated_human_blocker", "repeated_rollback", "mode_failure_spike", "repeated_bad_feature_selection", "efficiency_regression"]
