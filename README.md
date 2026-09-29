@@ -103,8 +103,8 @@ Common API-key, bearer-token, and credential assignments are redacted. This is a
 best-effort filter, not a guarantee that arbitrary sensitive content is removed.
 Review evidence retention and state-directory access before sharing artifacts.
 Each cycle is limited to four hours by default, agent output is capped, and the
-runner stops when its evidence directory reaches the configured 100 MB limit.
-Archive or remove old evidence before resuming after the evidence cap is reached.
+runner will not start another cycle when project evidence reaches the configured
+100 MB limit. Archive or remove old evidence before resuming after the cap.
 
 ## Self-improvement
 

@@ -133,6 +133,10 @@ def run_agent(
                 f"Codex {role} exited with status {return_code}; see {stderr_path}"
             )
         raise CodexError(f"Codex {role} did not write its structured result")
+    if last_message_path.stat().st_size > policy.max_agent_output_bytes:
+        raise CodexError(
+            f"Codex {role} structured result exceeded the configured output limit"
+        )
 
     raw_text = last_message_path.read_text(encoding="utf-8", errors="replace")
     write_private_text(last_message_path, raw_text)
