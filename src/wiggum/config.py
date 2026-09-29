@@ -173,6 +173,14 @@ def load_configuration(config_dir: Path = DEFAULT_CONFIG_DIR) -> ApplicationConf
             capture_command = parsed_capture[0]
         else:
             capture_command = None
+        check_commands = _command_list(
+            raw.get("check_commands", []), f"projects.{alias}.check_commands"
+        )
+        if not check_commands:
+            raise ConfigurationError(
+                f"Project {alias!r} must configure at least one check command; "
+                "Wiggum cannot integrate unvalidated changes"
+            )
         project = ProjectConfig(
             alias=str(alias),
             repo_path=repo_path,
@@ -180,9 +188,7 @@ def load_configuration(config_dir: Path = DEFAULT_CONFIG_DIR) -> ApplicationConf
             base_branch=str(raw.get("base_branch", "main")),
             constitution=str(raw["constitution"]) if raw.get("constitution") else None,
             state_dir=state_dir,
-            check_commands=_command_list(
-                raw.get("check_commands", []), f"projects.{alias}.check_commands"
-            ),
+            check_commands=check_commands,
             browser_capture_command=capture_command,
         )
         if project.state_dir == repo_path or repo_path in project.state_dir.parents:

@@ -9,8 +9,8 @@ constitution = "PRODUCT.md"
 # or ~/.local/state/wiggum/projects/garden.
 # state_dir = "~/.local/state/wiggum/projects/garden"
 
-# Commands are argv arrays, not shell strings. They run in the target worktree.
-# Empty means the project has no configured validation command.
+# Required: provide one or more validation commands. They are argv arrays, not
+# shell strings, and run in the target worktree. Empty lists are rejected.
 check_commands = [["pytest", "-q"]]
 
 # Optional command that writes a screenshot to WIGGUM_SCREENSHOT_PATH.

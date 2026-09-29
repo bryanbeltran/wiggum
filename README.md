@@ -48,8 +48,10 @@ git switch -c feature/wiggum
 ```
 
 Copy `config/projects.example.toml` to `config/projects.toml`, then set the target
-repository path, integration branch, base branch, and project checks. Add a
-product constitution in the target repo and point `constitution` to it.
+repository path, integration branch, base branch, and at least one project check.
+`wiggum config validate` rejects projects without checks, and Wiggum will not
+integrate a change unless every configured check passes after implementation.
+Add a product constitution in the target repo and point `constitution` to it.
 
 ```sh
 wiggum config validate

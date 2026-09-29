@@ -47,6 +47,19 @@ class ConfigurationTests(unittest.TestCase):
         self.assertEqual(project.repo_path, self.repo.resolve())
         self.assertEqual(project.check_commands, (("python3", "-c", "print(1)"),))
 
+    def test_project_without_check_commands_is_rejected(self) -> None:
+        self.write_projects()
+        projects_path = self.config_dir / "projects.toml"
+        projects_path.write_text(
+            projects_path.read_text().replace(
+                'check_commands = [["python3", "-c", "print(1)"]]\n', ""
+            )
+        )
+        with self.assertRaisesRegex(
+            ConfigurationError, "cannot integrate unvalidated changes"
+        ):
+            load_configuration(self.config_dir)
+
     def test_integration_branch_cannot_equal_protected_base(self) -> None:
         self.write_projects("main")
         config = load_configuration(self.config_dir)

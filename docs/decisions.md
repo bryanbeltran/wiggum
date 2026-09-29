@@ -11,6 +11,7 @@ implementation choices for its open details.
 | Stop/pivot | Write a control request in private project state; honor it only at an atomic cycle boundary. |
 | Target work | Require a clean configured integration branch; use a detached worktree for each cycle. |
 | Risk | Red-risk requests are deferred. All changes are reviewed and validated before a fast-forward into the integration branch. |
+| Validation | Require one or more project check commands. Reject missing checks in configuration and block integration unless checks pass. |
 | Yellow risk | Require a testable acceptance criterion and 0.8 investigator confidence by default; allow projects to tune the threshold in policy. |
 | Publishing | No automatic push or PR creation. A batch threshold reports that human review is due. |
 | State | Store state outside target repos under the XDG state directory with owner-only permissions. Preserve redacted Codex JSONL events and concise summaries. |

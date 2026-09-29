@@ -269,6 +269,7 @@ class WiggumRunner:
                     "no_change",
                     "deferred",
                     "baseline_failed",
+                    "validation_not_configured",
                     "review_rejected",
                     "validation_failed",
                     "error",
@@ -357,9 +358,13 @@ class WiggumRunner:
 
             baseline = self._run_checks(project, worktree, evidence_dir, "baseline", deadline)
             record["baseline_checks"] = baseline
-            if self.policy.baseline_checks and baseline["status"] == "failed":
+            if baseline["status"] == "not_configured":
+                record["status"] = "validation_not_configured"
+                record["reason"] = "No configured project checks are available"
+                return self._finish_cycle(state, record)
+            if self.policy.baseline_checks and baseline["status"] != "passed":
                 record["status"] = "baseline_failed"
-                record["reason"] = "Configured baseline checks failed before implementation"
+                record["reason"] = "Configured baseline checks did not pass before implementation"
                 return self._finish_cycle(state, record)
             if not is_clean(worktree):
                 record["status"] = "baseline_failed"
@@ -590,8 +595,11 @@ class WiggumRunner:
                     project, worktree, evidence_dir, f"validation-{attempt + 1}", deadline
                 )
                 record["tests"].append(final_tests)
-                if final_tests["status"] == "failed":
-                    if attempt < self.policy.review_fix_rounds:
+                if final_tests["status"] != "passed":
+                    if (
+                        final_tests["status"] == "failed"
+                        and attempt < self.policy.review_fix_rounds
+                    ):
                         git(worktree, "reset", check=False)
                         review_result = {
                             "findings": [
@@ -599,8 +607,16 @@ class WiggumRunner:
                             ]
                         }
                         continue
-                    record["status"] = "validation_failed"
-                    record["reason"] = "Configured checks failed after the final fix attempt"
+                    if final_tests["status"] == "not_configured":
+                        record["status"] = "validation_not_configured"
+                        record["reason"] = (
+                            "No configured project checks ran; refusing to integrate this change"
+                        )
+                    else:
+                        record["status"] = "validation_failed"
+                        record["reason"] = (
+                            "Configured checks did not pass after the final fix attempt"
+                        )
                     state.update_candidate(
                         candidate_id,
                         status="deferred",

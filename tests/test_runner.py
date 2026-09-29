@@ -164,6 +164,23 @@ class RunnerTests(unittest.TestCase):
         self.assertFalse((Path(cycle["evidence_dir"]) / "implementer-1.jsonl").exists())
         self.assertEqual(_git(self.repo, "rev-list", "--count", "main..feature/wiggum"), "0")
 
+    def test_unconfigured_final_validation_cannot_integrate_a_change(self) -> None:
+        runner = WiggumRunner(self.config, str(self.fake_codex))
+        with patch.dict(os.environ, {"FAKE_CODEX_SCENARIO": "implement"}), patch.object(
+            runner,
+            "_run_checks",
+            side_effect=[
+                {"status": "passed", "commands": []},
+                {"status": "not_configured", "commands": []},
+            ],
+        ):
+            result = runner.run(self.project, "harden", cycles=1)
+        cycle = result["results"][0]
+        self.assertEqual(cycle["status"], "validation_not_configured")
+        self.assertIn("refusing to integrate", cycle["reason"])
+        self.assertEqual(_git(self.repo, "rev-list", "--count", "main..feature/wiggum"), "0")
+        self.assertFalse((self.repo / "run-marker.txt").exists())
+
     def test_council_mode_computes_weighted_score_and_does_not_build(self) -> None:
         with patch.dict(os.environ, {"FAKE_CODEX_SCENARIO": "council"}):
             result = WiggumRunner(self.config, str(self.fake_codex)).run(
