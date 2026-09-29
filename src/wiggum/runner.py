@@ -470,6 +470,38 @@ class WiggumRunner:
             if outcome != "implement" or not isinstance(candidate, dict):
                 raise CycleError("Investigator returned an inconsistent outcome/candidate pair")
 
+            if risk == "yellow":
+                confidence = float(candidate.get("confidence", 0))
+                criteria = candidate.get("acceptance_criteria", [])
+                if confidence < self.policy.yellow_risk_min_confidence or not criteria:
+                    record["status"] = "deferred"
+                    record["reason"] = (
+                        "Yellow-risk work needs confidence of at least "
+                        f"{self.policy.yellow_risk_min_confidence:.2f} and a testable acceptance criterion"
+                    )
+                    candidate_id = _candidate_id(candidate)
+                    state.update_candidate(
+                        candidate_id,
+                        **candidate,
+                        status="deferred",
+                        mode=mode,
+                        risk=risk,
+                        cycle_id=cycle_id,
+                        decision_reason=record["reason"],
+                    )
+                    record["candidate_id"] = candidate_id
+                    state.add_decision(
+                        {
+                            "cycle_id": cycle_id,
+                            "mode": mode,
+                            "candidate_id": candidate_id,
+                            "decision": "defer",
+                            "risk": risk,
+                            "reason": record["reason"],
+                        }
+                    )
+                    return self._finish_cycle(state, record)
+
             candidate_id = _candidate_id(candidate)
             record["candidate_id"] = candidate_id
             tracked = read_json(state.backlog_path, {}).get(candidate_id)
@@ -741,7 +773,7 @@ class WiggumRunner:
                 f"{mode_prompt}{selection_instructions}",
                 "Product constitution:\n" + constitution,
                 "Existing Wiggum candidates and dispositions:\n" + json.dumps(backlog, indent=2),
-                "Risk boundaries: Green changes may proceed. Yellow work may proceed only when the design is clear and isolated. "
+                f"Risk boundaries: Green changes may proceed. Yellow work may proceed only when isolated, confidence is at least {self.policy.yellow_risk_min_confidence:.2f}, and a testable acceptance criterion is present. "
                 "Red work must be deferred: destructive migrations/data changes, auth changes, secrets, payments, paid services, "
                 "privacy/legal consequences, breaking APIs, or consequential product decisions. Size alone is not a red gate.",
                 "Return the required structured investigation result. For an implement outcome provide evidence and testable acceptance criteria. "

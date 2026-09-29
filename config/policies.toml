@@ -6,6 +6,7 @@ review_fix_rounds = 1
 agent_timeout_seconds = 3600
 check_timeout_seconds = 1800
 max_cycle_seconds = 14400
+yellow_risk_min_confidence = 0.8
 baseline_checks = true
 max_agent_output_bytes = 20000000
 max_evidence_bytes = 104857600

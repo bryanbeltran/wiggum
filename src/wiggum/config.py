@@ -25,6 +25,7 @@ class RuntimePolicy:
     agent_timeout_seconds: int
     check_timeout_seconds: int
     max_cycle_seconds: int
+    yellow_risk_min_confidence: float
     baseline_checks: bool
     max_agent_output_bytes: int
     max_evidence_bytes: int
@@ -125,6 +126,7 @@ def load_configuration(config_dir: Path = DEFAULT_CONFIG_DIR) -> ApplicationConf
         agent_timeout_seconds=int(runtime.get("agent_timeout_seconds", 3600)),
         check_timeout_seconds=int(runtime.get("check_timeout_seconds", 1800)),
         max_cycle_seconds=int(runtime.get("max_cycle_seconds", 14400)),
+        yellow_risk_min_confidence=float(runtime.get("yellow_risk_min_confidence", 0.8)),
         baseline_checks=bool(runtime.get("baseline_checks", True)),
         max_agent_output_bytes=int(runtime.get("max_agent_output_bytes", 20_000_000)),
         max_evidence_bytes=int(runtime.get("max_evidence_bytes", 100_000_000)),
@@ -138,6 +140,8 @@ def load_configuration(config_dir: Path = DEFAULT_CONFIG_DIR) -> ApplicationConf
     )
     if policy.default_cycles < 1 or policy.low_value_stop_after < 1 or policy.max_cycle_seconds < 1:
         raise ConfigurationError("Cycle counts and low-value stop threshold must be positive")
+    if not 0 <= policy.yellow_risk_min_confidence <= 1:
+        raise ConfigurationError("runtime.yellow_risk_min_confidence must be between 0 and 1")
     if policy.batch_review_after_commits < 1:
         raise ConfigurationError("batch_review_after_commits must be positive")
 

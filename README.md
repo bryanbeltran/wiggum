@@ -83,7 +83,9 @@ checkpoint, then fast-forwards the integration branch. The integration batch
 defaults to a review gate after fifteen successful commits.
 
 Large work may proceed when the investigator marks its design as confident and
-validation passes. Yellow-risk work is still isolated in its cycle worktree.
+validation passes. Yellow-risk work is deferred unless confidence is at least
+0.8 by default and a testable acceptance criterion is present; the threshold is
+configurable. Accepted yellow-risk work stays isolated in its cycle worktree.
 Destructive migrations, authentication or authorization changes, secrets,
 payments, privacy or legal implications, breaking APIs, and consequential
 product choices are deferred for human approval.
