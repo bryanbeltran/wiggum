@@ -126,5 +126,9 @@ runtime remains a human action.
 PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
 
+## License
+
+Wiggum is licensed under the Mozilla Public License 2.0. See [LICENSE](LICENSE).
+
 See `docs/decisions.md` for choices made where the Notion design leaves details
 open.
